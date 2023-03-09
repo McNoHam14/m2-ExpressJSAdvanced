@@ -1,0 +1,31 @@
+[
+  {
+    "title": "Ben test article",
+    "category": "Category1",
+    "content": "<p></p>",
+    "cover": "https://picsum.photos/200/300",
+    "readTime": { "value": "5", "unit": "mins" },
+    "author": {
+      "name": "Ben McMahon",
+      "avatar": "https://picsum.photos/200/300"
+    },
+    "createdAt": "2023-03-07T15:48:11.450Z",
+    "id": "ek26ta4vleyfdwe3",
+    "comments": []
+  },
+  {
+    "title": "Ben test article",
+    "category": "Category1",
+    "content": "<p></p>",
+    "cover": "http://localhost:3002/ek26ta4vleyfdx8w.webp",
+    "readTime": { "value": "5", "unit": "mins" },
+    "author": {
+      "name": "Ben McMahon",
+      "avatar": "https://picsum.photos/200/300"
+    },
+    "createdAt": "2023-03-07T15:48:12.560Z",
+    "id": "ek26ta4vleyfdx8w",
+    "updatedAt": "2023-03-09T14:43:51.878Z",
+    "comments": []
+  }
+]
