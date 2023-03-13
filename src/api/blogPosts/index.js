@@ -13,18 +13,27 @@ import {
   writeBlogPosts,
 } from "../../lib/fs-tools.js";
 import multer from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, publicFolderPath);
-  },
-  filename: function (req, file, cb) {
-    const filename = req.params.blogPostId + extname(file.originalname);
-    cb(null, filename);
+const cloudStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "strive",
   },
 });
 
-const upload = multer({ storage: storage });
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, publicFolderPath);
+//   },
+//   filename: function (req, file, cb) {
+//     const filename = req.params.blogPostId + extname(file.originalname);
+//     cb(null, filename);
+//   },
+// });
+
+const upload = multer({ storage: cloudStorage });
 
 const blogPostsRouter = Express.Router();
 
@@ -160,12 +169,12 @@ blogPostsRouter.post(
       const index = blogPostsArray.findIndex(
         (blogPost) => blogPost.id === req.params.blogPostId
       );
-      const filename = req.params.blogPostId + extname(req.file.originalname);
+      // const filename = req.params.blogPostId + extname(req.file.originalname);
       if (index !== -1) {
         const oldBlogPost = blogPostsArray[index];
         const updatedBlogPost = {
           ...oldBlogPost,
-          cover: `http://localhost:3002/${filename}`,
+          cover: req.file.path,
           updatedAt: new Date(),
         };
         blogPostsArray[index] = updatedBlogPost;

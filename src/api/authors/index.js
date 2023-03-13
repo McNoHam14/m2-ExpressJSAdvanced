@@ -14,18 +14,27 @@ import {
   writeAuthors,
 } from "../../lib/fs-tools.js";
 import multer from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, publicFolderPath);
-  },
-  filename: function (req, file, cb) {
-    const filename = req.params.authorId + extname(file.originalname);
-    cb(null, filename);
+const cloudStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "strive",
   },
 });
 
-const upload = multer({ storage: storage });
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, publicFolderPath);
+//   },
+//   filename: function (req, file, cb) {
+//     const filename = req.params.authorId + extname(file.originalname);
+//     cb(null, filename);
+//   },
+// });
+
+const upload = multer({ storage: cloudStorage });
 
 const authorsRouter = Express.Router();
 
@@ -193,16 +202,17 @@ authorsRouter.post(
   upload.single("avatar"),
   async (req, res, next) => {
     try {
+      console.log(req.file);
       const authors = await getAuthors();
       const index = authors.findIndex(
         (author) => author.id === req.params.authorId
       );
       if (index !== -1) {
-        const filename = req.params.authorId + extname(req.file.originalname);
+        // const filename = req.params.authorId + extname(req.file.originalname);
         // await saveAuthorImage(filename, req.file.buffer);
         authors[index] = {
           ...authors[index],
-          avatar: `http://localhost:3002/${filename}`,
+          avatar: req.file.path,
         };
         await writeAuthors(authors);
         res.send({ message: `${req.params.authorId} avatar uploaded` });

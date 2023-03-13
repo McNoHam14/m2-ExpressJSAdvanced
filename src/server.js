@@ -13,14 +13,29 @@ import cors from "cors";
 import { dirname, join, extname } from "path";
 import { fileURLToPath } from "url";
 import { publicFolderPath } from "./lib/fs-tools.js";
+import createHttpError from "http-errors";
 
 const server = Express();
-const port = 3002;
+const port = process.env.PORT || 3002;
+const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL];
 
-server.use(cors());
+server.use(Express.static(publicFolderPath));
+
+server.use(
+  cors({
+    origin: (currentOrigin, corsNext) => {
+      if (!currentOrigin || whitelist.indexOf(currentOrigin) !== -1) {
+        corsNext(null, true);
+      } else {
+        corsNext(
+          createHttpError(400, `Origin ${currentOrigin} is not whitelisted`)
+        );
+      }
+    },
+  })
+);
 
 server.use(Express.json());
-server.use(Express.static(publicFolderPath));
 
 // Endpoints
 
